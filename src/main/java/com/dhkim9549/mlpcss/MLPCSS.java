@@ -84,6 +84,7 @@ public class MLPCSS {
             model = train(model, trainIter);
         }
 
+        evaluateModel(model);
 
     }
 
