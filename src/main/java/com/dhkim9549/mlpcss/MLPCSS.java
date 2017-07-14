@@ -121,7 +121,7 @@ public class MLPCSS {
 
     public static MultiLayerNetwork train(MultiLayerNetwork model, DataSetIterator trainIter) throws Exception {
 
-        model.setListeners(new ScoreIterationListener(10));
+        model.setListeners(new ScoreIterationListener(1000));
 
         model.fit( trainIter );
 
@@ -130,7 +130,7 @@ public class MLPCSS {
 
     private static List<DataSet> getTrainingData() {
 
-        System.out.println("Getting training data...");
+        //System.out.println("Getting training data...");
 
         List<DataSet> listDs = new ArrayList<>();
 
@@ -143,8 +143,8 @@ public class MLPCSS {
 
         Collections.shuffle(listDs);
 
-        System.out.println("listDs.size() = " + listDs.size());
-        System.out.println("Getting training data complete.");
+        //System.out.println("listDs.size() = " + listDs.size());
+        //System.out.println("Getting training data complete.");
 
         return listDs;
     }
