@@ -83,9 +83,9 @@ public class MLPCSS {
 
         int seed = 123;
 
-        int numInputs = 9 * 3;
+        int numInputs = 2;
         int numOutputs = 2;
-        int numHiddenNodes = 9 * 3;
+        int numHiddenNodes = 2;
 
         System.out.println("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
