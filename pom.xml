@@ -16,7 +16,7 @@
         <relativePath>./parent</relativePath>
     </parent>
 
-    <name>DeepLearning4j Examples</name>
+    <name>DeepLearning4j MLP-CSS</name>
 
     <repositories>
         <repository>
