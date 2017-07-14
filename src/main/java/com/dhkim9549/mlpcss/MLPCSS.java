@@ -71,6 +71,10 @@ public class MLPCSS {
                 break;
             }
 
+            if(i % 1000 == 0) {
+                System.out.println("i = " + i);
+            }
+
             List<DataSet> listDs = getTrainingData();
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
 
@@ -121,7 +125,7 @@ public class MLPCSS {
 
     public static MultiLayerNetwork train(MultiLayerNetwork model, DataSetIterator trainIter) throws Exception {
 
-        model.setListeners(new ScoreIterationListener(1000));
+        //model.setListeners(new ScoreIterationListener(1000));
 
         model.fit( trainIter );
 
