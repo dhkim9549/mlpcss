@@ -1,5 +1,6 @@
 package com.dhkim9549.mlpcss;
 
+import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -8,9 +9,11 @@ import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
@@ -62,8 +65,18 @@ public class MLPCSS {
 
         long lastIterationModelSave = 0;
 
-        List<DataSet> listDs = getTrainingData();
+        while(true) {
 
+            if(i > 10000) {
+                break;
+            }
+
+            List<DataSet> listDs = getTrainingData();
+            DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
+
+            // Train the model
+            model = train(model, trainIter);
+        }
     }
 
     public static MultiLayerNetwork getInitModel(double learningRate) throws Exception {
@@ -106,6 +119,15 @@ public class MLPCSS {
         return model;
     }
 
+    public static MultiLayerNetwork train(MultiLayerNetwork model, DataSetIterator trainIter) throws Exception {
+
+        model.setListeners(new ScoreIterationListener(10));
+
+        model.fit( trainIter );
+
+        return model;
+    }
+
     private static List<DataSet> getTrainingData() {
 
         System.out.println("Getting training data...");
@@ -122,7 +144,7 @@ public class MLPCSS {
         Collections.shuffle(listDs);
 
         System.out.println("listDs.size() = " + listDs.size());
-        System.out.println("Getting training complete.");
+        System.out.println("Getting training data complete.");
 
         return listDs;
     }
@@ -151,7 +173,7 @@ public class MLPCSS {
 
         DataSet ds = new DataSet(feature, label);
 
-        System.out.println("ds = " + ds);
+        //System.out.println("ds = " + ds);
 
         return ds;
     }
