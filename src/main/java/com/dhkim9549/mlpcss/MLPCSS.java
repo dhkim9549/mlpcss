@@ -83,6 +83,8 @@ public class MLPCSS {
             // Train the model
             model = train(model, trainIter);
         }
+
+
     }
 
     public static MultiLayerNetwork getInitModel(double learningRate) throws Exception {
@@ -182,5 +184,31 @@ public class MLPCSS {
         //System.out.println("ds = " + ds);
 
         return ds;
+    }
+
+    public static void evaluateModel(MultiLayerNetwork model) {
+
+        // Evaluate
+        {
+            double[] featureData = new double[2];
+            featureData[0] = 0.0;
+            featureData[1] = 0.0;
+            INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
+            System.out.println("feature = " + feature);
+
+            INDArray output = model.output(feature);
+            System.out.println("output = " + output);
+        }
+
+        {
+            double[] featureData = new double[2];
+            featureData[0] = 0.0;
+            featureData[1] = 1.0;
+            INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
+            System.out.println("feature = " + feature);
+
+            INDArray output = model.output(feature);
+            System.out.println("output = " + output);
+        }
     }
 }
