@@ -84,6 +84,7 @@ public class MLPCSS {
             Collections.shuffle(listDs);
 
             // Because the size of listDs is too big for training, listDs has to be broken up.
+            List<DataSet> listDs2 = new LinkedList<>();
             int j = 0;
             for(DataSet ds: listDs) {
 
@@ -93,7 +94,6 @@ public class MLPCSS {
                     System.out.println("j = " + j);
                 }
 
-                List<DataSet> listDs2 = new LinkedList<>();
                 listDs2.add(ds);
 
                 if(listDs2.size() == batchSize * 1000) {
