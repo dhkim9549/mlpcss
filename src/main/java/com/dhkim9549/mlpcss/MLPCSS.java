@@ -96,6 +96,8 @@ public class MLPCSS {
                 writeModelToFile(model, "/down/css_model_" + hpId + "_" + i + ".zip");
             }
         }
+
+        evaluateModelBatch(model);
     }
 
     public static MultiLayerNetwork getInitModel(double learningRate) throws Exception {
