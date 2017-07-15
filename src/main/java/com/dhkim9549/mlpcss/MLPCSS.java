@@ -229,7 +229,6 @@ public class MLPCSS {
     public static void evaluateModel(MultiLayerNetwork model) {
 
         long income = 0;
-
         for(int i = 0; i < 10; i++) {
 
             income = 10000000 * i;
@@ -237,6 +236,20 @@ public class MLPCSS {
             double[] featureData = new double[2];
             featureData[0] = rescaleAmt(income);
             featureData[1] = rescaleAmt(0);
+            INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
+            INDArray output = model.output(feature);
+            System.out.print("feature = " + feature);
+            System.out.println("  output = " + output);
+        }
+
+        long debt = 0;
+        for(int i = 0; i < 10; i++) {
+
+            debt = 10000000 * i;
+
+            double[] featureData = new double[2];
+            featureData[0] = rescaleAmt(0);
+            featureData[1] = rescaleAmt(debt);
             INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
             INDArray output = model.output(feature);
             System.out.print("feature = " + feature);
