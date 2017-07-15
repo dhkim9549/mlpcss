@@ -81,10 +81,31 @@ public class MLPCSS {
                 evaluateModel(model);
             }
 
-            DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
+            Collections.shuffle(listDs);
 
-            // Train the model
-            model = train(model, trainIter);
+            // Because the size of listDs is too big for training, listDs has to be broken up.
+            int j = 0;
+            for(DataSet ds: listDs) {
+
+                j++;
+
+                if(j % 1000 == 0) {
+                    System.out.println("j = " + j);
+                }
+
+                List<DataSet> listDs2 = new LinkedList<>();
+                listDs2.add(ds);
+
+                if(listDs2.size() == batchSize * 1000) {
+
+                    DataSetIterator trainIter = new ListDataSetIterator(listDs2, batchSize);
+
+                    // Train the model
+                    model = train(model, trainIter);
+
+                    listDs2.clear();
+                }
+            }
 
             if (i % 0 == 0) {
                 writeModelToFile(model, "/down/css_model_" + hpId + "_" + i + ".zip");
