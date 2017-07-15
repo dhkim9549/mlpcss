@@ -198,7 +198,7 @@ public class MLPCSS {
         String bad_yn = getToken(s, 19, "\t");
         long income = Long.parseLong(getToken(s, 15, "\t"));
         long debt = Long.parseLong(getToken(s, 16, "\t"));
-        long scor_grd = Long.parseLong(getToken(s, 15, "\t"));
+        long scor_grd = Long.parseLong(getToken(s, 13, "\t"));
 
         double[] featureData = new double[3];
         double[] labelData = new double[2];
