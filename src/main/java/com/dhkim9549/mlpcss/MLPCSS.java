@@ -32,9 +32,6 @@ public class MLPCSS {
     //double learnigRate = Double.parseDouble(args[0]);
     static double learnigRate = 0.0025;
 
-    // Number of sample size per iteration
-    static long nSamples = 16;
-
     // Mini-batch size
     static int batchSize = 16;
 
@@ -54,12 +51,11 @@ public class MLPCSS {
         System.out.println("learnigRate = " + learnigRate);
         System.out.println("Updater = " + "SGD");
         System.out.println("mini-batch size (batchSize) = " + batchSize);
-        System.out.println("Number of sample size per iteration (nSamples) = " + nSamples);
         System.out.println("i >= 0");
         System.out.println("************************************************");
 
-        //MultiLayerNetwork model = getInitModel(learnigRate);
-        MultiLayerNetwork model = readModelFromFile("/down/sin/css_model_MLPCSS_h2_uSGD_ge_mb16_ss16_ev100000_aSP_150000.zip");
+        MultiLayerNetwork model = getInitModel(learnigRate);
+        //MultiLayerNetwork model = readModelFromFile("/down/sin/css_model_MLPCSS_h2_uSGD_ge_mb16_ss16_ev100000_aSP_150000.zip");
         //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_mb16_ss16_5210000.zip");
 
         NeuralNetConfiguration config = model.conf();
@@ -68,36 +64,34 @@ public class MLPCSS {
         // Training data input file reader
         in = new LineNumberReader(new FileReader(trainingDataInputFileName));
 
+        // Get training data
+        List<DataSet> listDs = getTrainingData();
+
         // Training iteration
         long i = 0;
 
         while(true) {
-            if(true) break;
 
             i++;
 
-            if(i % 1000 == 0) {
+            if(i % 1 == 0) {
                 System.out.println("i = " + i);
             }
-            if(i % 5000 == 0) {
+            if(i % 1 == 0) {
                 evaluateModel(model);
             }
 
-            List<DataSet> listDs = getTrainingData();
-            if(listDs.size() == 0) {
-                break;
-            }
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
 
             // Train the model
             model = train(model, trainIter);
 
-            if (i % 50000 == 0) {
+            if (i % 0 == 0) {
                 writeModelToFile(model, "/down/css_model_" + hpId + "_" + i + ".zip");
             }
         }
 
-        evaluateModelBatch(model);
+        //evaluateModelBatch(model);
     }
 
     public static MultiLayerNetwork getInitModel(double learningRate) throws Exception {
@@ -142,7 +136,7 @@ public class MLPCSS {
 
     public static MultiLayerNetwork train(MultiLayerNetwork model, DataSetIterator trainIter) throws Exception {
 
-        //model.setListeners(new ScoreIterationListener(1000));
+        model.setListeners(new ScoreIterationListener(1000));
 
         model.fit( trainIter );
 
@@ -151,20 +145,27 @@ public class MLPCSS {
 
     private static List<DataSet> getTrainingData() throws Exception {
 
-        //System.out.println("Getting training data...");
+        System.out.println("Getting training data...");
 
         List<DataSet> listDs = new ArrayList<>();
 
-        for (int i = 0; i < nSamples; i++) {
+        String s = "";
+        int i = 0;
 
-            String s = "";
-            while(s.equals("") || s.startsWith("GUARNT_NO")) {
-                s = in.readLine();
-                if(s == null) {
-                    in.close();
-                    in = new LineNumberReader(new FileReader(trainingDataInputFileName));
-                    s = in.readLine();
-                }
+        while((s = in.readLine()) != null) {
+
+            i++;
+            if(i % 10000 == 0) {
+                System.out.println("i = " + i);
+            }
+
+            if(s.startsWith("GUARNT_NO")) {
+                continue;
+            }
+
+            String acpt_updt_dy = getToken(s, 11, "\t");
+            if(acpt_updt_dy.compareTo("20150101") >= 0) {
+                continue;
             }
 
             DataSet ds = getDataSet(s);
@@ -173,8 +174,8 @@ public class MLPCSS {
 
         Collections.shuffle(listDs);
 
-        //System.out.println("listDs.size() = " + listDs.size());
-        //System.out.println("Getting training data complete.");
+        System.out.println("listDs.size() = " + listDs.size());
+        System.out.println("Getting training data complete.");
 
         return listDs;
     }
