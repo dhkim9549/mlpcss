@@ -264,8 +264,8 @@ public class MLPCSS {
         System.out.println("cb_grd");
         for(int i = 1; i <= 10; i++) {
             double[] featureData = new double[3];
-            featureData[0] = rescaleAmt(0);
-            featureData[1] = rescaleAmt(0);
+            featureData[0] = rescaleAmt(30000000);
+            featureData[1] = rescaleAmt(40000000);
             featureData[2] = (double)i / 10.0;
             INDArray feature = Nd4j.create(featureData, new int[]{1, 3});
             INDArray output = model.output(feature);
