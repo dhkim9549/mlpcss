@@ -157,7 +157,7 @@ public class MLPCSS {
 
     public static MultiLayerNetwork train(MultiLayerNetwork model, DataSetIterator trainIter) throws Exception {
 
-        model.setListeners(new ScoreIterationListener(1000));
+        //model.setListeners(new ScoreIterationListener(1000));
 
         model.fit( trainIter );
 
