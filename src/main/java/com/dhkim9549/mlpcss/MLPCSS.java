@@ -198,14 +198,14 @@ public class MLPCSS {
         String bad_yn = getToken(s, 19, "\t");
         long income = Long.parseLong(getToken(s, 15, "\t"));
         long debt = Long.parseLong(getToken(s, 16, "\t"));
-        long cb_grd = Long.parseLong(getToken(s, 14, "\t"));
+        long scor_grd = Long.parseLong(getToken(s, 15, "\t"));
 
         double[] featureData = new double[3];
         double[] labelData = new double[2];
 
         featureData[0] = rescaleAmt(income);
         featureData[1] = rescaleAmt(debt);
-        featureData[2] = (double)cb_grd / 10.0;
+        featureData[2] = (double)scor_grd / 10.0;
         if(bad_yn != null && bad_yn.equals("Y")) {
             labelData[0] = 1.0;
             labelData[1] = 0.0;
@@ -221,7 +221,7 @@ public class MLPCSS {
 
 
 /*        System.out.println("\nguarnt_no = " + guarnt_no);
-        System.out.println(income + " " + debt + " " + cb_grd);
+        System.out.println(income + " " + debt + " " + scor_grd);
         System.out.println("ds = " + ds);
 */
 
@@ -261,7 +261,7 @@ public class MLPCSS {
             System.out.println("  output = " + output);
         }
 
-        System.out.println("cb_grd");
+        System.out.println("scor_grd");
         for(int i = 1; i <= 10; i++) {
             double[] featureData = new double[3];
             featureData[0] = rescaleAmt(30000000);
