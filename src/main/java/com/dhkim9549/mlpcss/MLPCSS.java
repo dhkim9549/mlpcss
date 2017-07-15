@@ -201,7 +201,6 @@ public class MLPCSS {
         double[] featureData = new double[2];
         double[] labelData = new double[2];
 
-        Random rnd = new Random();
         featureData[0] = rescaleAmt(income);
         featureData[1] = rescaleAmt(debt);
         if(bad_yn != null && bad_yn.equals("Y")) {
@@ -217,7 +216,11 @@ public class MLPCSS {
 
         DataSet ds = new DataSet(feature, label);
 
-        //System.out.println("ds = " + ds);
+/*
+        System.out.println("\nguarnt_no = " + guarnt_no);
+        System.out.println(income + " " + debt);
+        System.out.println("ds = " + ds);
+*/
 
         return ds;
     }
@@ -232,16 +235,19 @@ public class MLPCSS {
 
             double[] featureData = new double[2];
             featureData[0] = rescaleAmt(income);
-            featureData[1] = 0.0;
+            featureData[1] = rescaleAmt(0);
             INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
-            System.out.println("feature = " + feature);
-
             INDArray output = model.output(feature);
-            System.out.println("output = " + output);
+            System.out.print("feature = " + feature);
+            System.out.println("  output = " + output);
         }
     }
 
     public static double rescaleAmt(long x) {
-        return Math.log(x + 1000000) - Math.log(10000000);
+        x = x + 10000000;
+        long min = 10000000;
+        long max = min + 100000000;
+        double y = (Math.log(x) - Math.log(min)) / (Math.log(max) - Math.log(min));
+        return y;
     }
 }
