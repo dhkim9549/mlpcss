@@ -89,7 +89,7 @@ public class MLPCSS {
 
                 j++;
 
-                if(j % 1000 == 0) {
+                if(j % 10000 == 0) {
                     System.out.println("j = " + j);
                 }
 
