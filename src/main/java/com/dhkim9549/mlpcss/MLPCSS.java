@@ -107,7 +107,7 @@ public class MLPCSS {
                 }
             }
 
-            if (i % 0 == 0) {
+            if (i % 1 == 0) {
                 writeModelToFile(model, "/down/css_model_" + hpId + "_" + i + ".zip");
             }
         }
