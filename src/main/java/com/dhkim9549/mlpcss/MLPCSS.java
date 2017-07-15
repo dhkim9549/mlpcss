@@ -41,6 +41,7 @@ public class MLPCSS {
     static long nEvalSamples = 10000;
 
     static LineNumberReader in = null;
+    static String inputFileName = "/down/data/list.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -62,7 +63,7 @@ public class MLPCSS {
         System.out.println("config = " + config);
 
         // Training data input file reader
-        in = new LineNumberReader(new FileReader("/down/data/list.txt"));
+        in = new LineNumberReader(new FileReader(inputFileName));
 
         // Training iteration
         long i = 0;
@@ -71,9 +72,11 @@ public class MLPCSS {
 
         while(true) {
 
+/*
             if(i > 100000) {
                 break;
             }
+*/
 
             i++;
 
@@ -156,7 +159,8 @@ public class MLPCSS {
             while(s.equals("") || s.startsWith("GUARNT_NO")) {
                 s = in.readLine();
                 if(s == null) {
-                    return listDs;
+                    in.close();
+                    in = new LineNumberReader(new FileReader(inputFileName));
                 }
             }
 
