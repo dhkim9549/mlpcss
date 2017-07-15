@@ -346,7 +346,7 @@ public class MLPCSS {
                 s2 += acc_rat + "\t";
             }
 
-            out.write(s + "\n");
+            out.write(s2 + "\n");
             out.flush();
         }
 
