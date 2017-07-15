@@ -10,6 +10,7 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -95,6 +96,10 @@ public class MLPCSS {
 
             // Train the model
             model = train(model, trainIter);
+
+            if (i % 50000 == 0) {
+                writeModelToFile(model, "/down/css_model_" + hpId + "_" + i + ".zip");
+            }
         }
     }
 
@@ -291,5 +296,31 @@ public class MLPCSS {
         long max = min + 100000000;
         double y = (Math.log(x) - Math.log(min)) / (Math.log(max) - Math.log(min));
         return y;
+    }
+
+    public static MultiLayerNetwork readModelFromFile(String fileName) throws Exception {
+
+        System.out.println("Deserializing model...");
+
+        // Load the model
+        File locationToSave = new File(fileName);
+        MultiLayerNetwork model = ModelSerializer.restoreMultiLayerNetwork(locationToSave);
+
+        System.out.println("Deserializing model complete.");
+
+        return model;
+    }
+
+    public static void writeModelToFile(MultiLayerNetwork model, String fileName) throws Exception {
+
+        System.out.println("Serializing model...");
+
+        // Save the model
+        File locationToSave = new File(fileName); // Where to save the network. Note: the file is in .zip format - can be opened externally
+        boolean saveUpdater = true; // Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
+        ModelSerializer.writeModel(model, locationToSave, saveUpdater);
+
+        System.out.println("Serializing model complete.");
+
     }
 }
