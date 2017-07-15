@@ -1,5 +1,6 @@
 package com.dhkim9549.mlpcss;
 
+import com.sun.xml.internal.messaging.saaj.soap.StringDataContentHandler;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
@@ -17,10 +18,8 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.io.*;
 
 /**
  * Created by internet user on 2017-07-14.
@@ -41,6 +40,8 @@ public class MLPCSS {
     // Evaluation sample size
     static long nEvalSamples = 10000;
 
+    static LineNumberReader in = null;
+
     public static void main(String[] args) throws Exception {
 
         System.out.println("************************************************");
@@ -60,14 +61,17 @@ public class MLPCSS {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        // training iteration
+        // Training data input file reader
+        in = new LineNumberReader(new FileReader("/down/data/list.txt"));
+
+        // Training iteration
         long i = 0;
 
         long lastIterationModelSave = 0;
 
         while(true) {
 
-            if(i > 10000) {
+            if(i > 100000) {
                 break;
             }
 
@@ -76,16 +80,19 @@ public class MLPCSS {
             if(i % 1000 == 0) {
                 System.out.println("i = " + i);
             }
+            if(i % 5000 == 0) {
+                evaluateModel(model);
+            }
 
             List<DataSet> listDs = getTrainingData();
+            if(listDs.size() == 0) {
+                break;
+            }
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
 
             // Train the model
             model = train(model, trainIter);
         }
-
-        evaluateModel(model);
-
     }
 
     public static MultiLayerNetwork getInitModel(double learningRate) throws Exception {
@@ -137,7 +144,7 @@ public class MLPCSS {
         return model;
     }
 
-    private static List<DataSet> getTrainingData() {
+    private static List<DataSet> getTrainingData() throws Exception {
 
         //System.out.println("Getting training data...");
 
@@ -145,8 +152,15 @@ public class MLPCSS {
 
         for (int i = 0; i < nSamples; i++) {
 
-            DataSet ds = getDataSet();
+            String s = "";
+            while(s.equals("") || s.startsWith("GUARNT_NO")) {
+                s = in.readLine();
+                if(s == null) {
+                    return listDs;
+                }
+            }
 
+            DataSet ds = getDataSet(s);
             listDs.add(ds);
         }
 
@@ -158,23 +172,45 @@ public class MLPCSS {
         return listDs;
     }
 
-    private static DataSet getDataSet() {
+    public static String getToken(String s, int x) {
+        return getToken(s, x, " \t\n\r\f");
+    }
+
+    public static String getToken(String s, int x, String delim) {
+        StringTokenizer st = new StringTokenizer(s, delim);
+        int counter = 0;
+        String answer = null;
+        while(st.hasMoreTokens()) {
+            String token = st.nextToken();
+            if(counter == x) {
+                answer = token.trim();
+            }
+            counter++;
+        }
+        return answer;
+    }
+
+    private static DataSet getDataSet(String s) throws Exception {
+
+        s = s.replaceAll("\t", "\t ");
+
+        String guarnt_no = getToken(s, 0, "\t");
+        String bad_yn = getToken(s, 19, "\t");
+        long income = Long.parseLong(getToken(s, 15, "\t"));
+        long debt = Long.parseLong(getToken(s, 16, "\t"));
 
         double[] featureData = new double[2];
         double[] labelData = new double[2];
 
         Random rnd = new Random();
-        featureData[0] = (double)rnd.nextInt(2);
-        featureData[1] = (double)rnd.nextInt(2);
-        if(featureData[0] == 0.0 && featureData[1] == 0.0) {
-            labelData[0] = 0.0;
-            labelData[1] = 1.0;
-        } else if(featureData[0] == 1.0 && featureData[1] == 1.0) {
-            labelData[0] = 0.0;
-            labelData[1] = 1.0;
-        } else {
+        featureData[0] = (double)income;
+        featureData[1] = (double)debt;
+        if(bad_yn != null && bad_yn.equals("Y")) {
             labelData[0] = 1.0;
             labelData[1] = 0.0;
+        } else {
+            labelData[0] = 0.0;
+            labelData[1] = 1.0;
         }
 
         INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
@@ -189,22 +225,15 @@ public class MLPCSS {
 
     public static void evaluateModel(MultiLayerNetwork model) {
 
-        // Evaluate
-        {
+        long income = 0;
+
+        for(int i = 0; i < 10; i++) {
+
+            income = 10000000 * i;
+
             double[] featureData = new double[2];
-            featureData[0] = 0.0;
+            featureData[0] = income;
             featureData[1] = 0.0;
-            INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
-            System.out.println("feature = " + feature);
-
-            INDArray output = model.output(feature);
-            System.out.println("output = " + output);
-        }
-
-        {
-            double[] featureData = new double[2];
-            featureData[0] = 0.0;
-            featureData[1] = 1.0;
             INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
             System.out.println("feature = " + feature);
 
