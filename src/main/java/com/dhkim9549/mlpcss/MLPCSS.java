@@ -21,7 +21,8 @@ import java.util.*;
 import java.io.*;
 
 /**
- * Created by internet user on 2017-07-14.
+ *  Building a CSS Model with MLP
+ * @author Dong-Hyun Kim
  */
 public class MLPCSS {
 
