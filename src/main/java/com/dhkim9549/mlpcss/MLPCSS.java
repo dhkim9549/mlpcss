@@ -296,8 +296,16 @@ public class MLPCSS {
         // Evaluation result output writer
         BufferedWriter out = new BufferedWriter(new FileWriter("/down/list_eval.txt"));
 
+        int i = 0;
+
         String s = "";
         while((s = in2.readLine()) != null) {
+
+            i++;
+            if(i % 1000 == 0) {
+                System.out.println("i = " + i);
+            }
+
             if(s.startsWith("GUARNT")) {
                 s += "\tacc_rat\n";
                 out.write(s);
