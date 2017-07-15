@@ -96,7 +96,7 @@ public class MLPCSS {
 
                 listDs2.add(ds);
 
-                if(listDs2.size() == batchSize * 1000) {
+                if(listDs2.size() == batchSize * 1) {
 
                     DataSetIterator trainIter = new ListDataSetIterator(listDs2, batchSize);
 
