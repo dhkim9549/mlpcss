@@ -99,7 +99,7 @@ public class MLPCSS {
 
         int seed = 123;
 
-        int numInputs = 2;
+        int numInputs = 3;
         int numOutputs = 2;
         int numHiddenNodes = 30;
 
@@ -198,13 +198,14 @@ public class MLPCSS {
         String bad_yn = getToken(s, 19, "\t");
         long income = Long.parseLong(getToken(s, 15, "\t"));
         long debt = Long.parseLong(getToken(s, 16, "\t"));
-        long scor_grd = Long.parseLong(getToken(s, 14, "\t"));
+        long cb_grd = Long.parseLong(getToken(s, 14, "\t"));
 
-        double[] featureData = new double[2];
+        double[] featureData = new double[3];
         double[] labelData = new double[2];
 
         featureData[0] = rescaleAmt(income);
         featureData[1] = rescaleAmt(debt);
+        featureData[2] = (double)cb_grd / 10.0;
         if(bad_yn != null && bad_yn.equals("Y")) {
             labelData[0] = 1.0;
             labelData[1] = 0.0;
@@ -213,45 +214,60 @@ public class MLPCSS {
             labelData[1] = 1.0;
         }
 
-        INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
+        INDArray feature = Nd4j.create(featureData, new int[]{1, 3});
         INDArray label = Nd4j.create(labelData, new int[]{1, 2});
 
         DataSet ds = new DataSet(feature, label);
 
-/*
-        System.out.println("\nguarnt_no = " + guarnt_no);
-        System.out.println(income + " " + debt);
+
+/*        System.out.println("\nguarnt_no = " + guarnt_no);
+        System.out.println(income + " " + debt + " " + cb_grd);
         System.out.println("ds = " + ds);
 */
+
 
         return ds;
     }
 
     public static void evaluateModel(MultiLayerNetwork model) {
 
+        System.out.println("Evaluating...");
+
+        System.out.println("income");
         long income = 0;
         for(int i = 0; i < 10; i++) {
-
             income = 10000000 * i;
-
-            double[] featureData = new double[2];
+            double[] featureData = new double[3];
             featureData[0] = rescaleAmt(income);
             featureData[1] = rescaleAmt(10000000);
-            INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
+            featureData[2] = 0.4;
+            INDArray feature = Nd4j.create(featureData, new int[]{1, 3});
             INDArray output = model.output(feature);
             System.out.print("feature = " + feature);
             System.out.println("  output = " + output);
         }
 
+        System.out.println("debt");
         long debt = 0;
         for(int i = 0; i < 10; i++) {
-
             debt = 10000000 * i;
-
-            double[] featureData = new double[2];
+            double[] featureData = new double[3];
             featureData[0] = rescaleAmt(10000000);
             featureData[1] = rescaleAmt(debt);
-            INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
+            featureData[2] = 0.4;
+            INDArray feature = Nd4j.create(featureData, new int[]{1, 3});
+            INDArray output = model.output(feature);
+            System.out.print("feature = " + feature);
+            System.out.println("  output = " + output);
+        }
+
+        System.out.println("cb_grd");
+        for(int i = 1; i <= 10; i++) {
+            double[] featureData = new double[3];
+            featureData[0] = rescaleAmt(0);
+            featureData[1] = rescaleAmt(0);
+            featureData[2] = (double)i / 10.0;
+            INDArray feature = Nd4j.create(featureData, new int[]{1, 3});
             INDArray output = model.output(feature);
             System.out.print("feature = " + feature);
             System.out.println("  output = " + output);
