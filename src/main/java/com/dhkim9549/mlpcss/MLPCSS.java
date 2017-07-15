@@ -161,6 +161,7 @@ public class MLPCSS {
                 if(s == null) {
                     in.close();
                     in = new LineNumberReader(new FileReader(inputFileName));
+                    s = in.readLine();
                 }
             }
 
