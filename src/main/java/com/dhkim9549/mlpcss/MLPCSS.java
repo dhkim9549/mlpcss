@@ -1,6 +1,5 @@
 package com.dhkim9549.mlpcss;
 
-import com.sun.xml.internal.messaging.saaj.soap.StringDataContentHandler;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
