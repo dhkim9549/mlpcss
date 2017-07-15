@@ -236,7 +236,7 @@ public class MLPCSS {
 
             double[] featureData = new double[2];
             featureData[0] = rescaleAmt(income);
-            featureData[1] = rescaleAmt(40000000);
+            featureData[1] = rescaleAmt(10000000);
             INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
             INDArray output = model.output(feature);
             System.out.print("feature = " + feature);
@@ -249,7 +249,7 @@ public class MLPCSS {
             debt = 10000000 * i;
 
             double[] featureData = new double[2];
-            featureData[0] = rescaleAmt(40000000);
+            featureData[0] = rescaleAmt(10000000);
             featureData[1] = rescaleAmt(debt);
             INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
             INDArray output = model.output(feature);
