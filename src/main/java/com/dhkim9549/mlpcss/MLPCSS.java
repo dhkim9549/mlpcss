@@ -101,7 +101,7 @@ public class MLPCSS {
 
         int numInputs = 2;
         int numOutputs = 2;
-        int numHiddenNodes = 2;
+        int numHiddenNodes = 30;
 
         System.out.println("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
@@ -198,6 +198,7 @@ public class MLPCSS {
         String bad_yn = getToken(s, 19, "\t");
         long income = Long.parseLong(getToken(s, 15, "\t"));
         long debt = Long.parseLong(getToken(s, 16, "\t"));
+        long scor_grd = Long.parseLong(getToken(s, 14, "\t"));
 
         double[] featureData = new double[2];
         double[] labelData = new double[2];
