@@ -202,8 +202,8 @@ public class MLPCSS {
         double[] labelData = new double[2];
 
         Random rnd = new Random();
-        featureData[0] = (double)income;
-        featureData[1] = (double)debt;
+        featureData[0] = rescaleAmt(income);
+        featureData[1] = rescaleAmt(debt);
         if(bad_yn != null && bad_yn.equals("Y")) {
             labelData[0] = 1.0;
             labelData[1] = 0.0;
@@ -231,7 +231,7 @@ public class MLPCSS {
             income = 10000000 * i;
 
             double[] featureData = new double[2];
-            featureData[0] = income;
+            featureData[0] = rescaleAmt(income);
             featureData[1] = 0.0;
             INDArray feature = Nd4j.create(featureData, new int[]{1, 2});
             System.out.println("feature = " + feature);
@@ -239,5 +239,9 @@ public class MLPCSS {
             INDArray output = model.output(feature);
             System.out.println("output = " + output);
         }
+    }
+
+    public static double rescaleAmt(long x) {
+        return Math.log(x + 1000000) - Math.log(10000000);
     }
 }
