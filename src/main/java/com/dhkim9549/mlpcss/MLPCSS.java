@@ -308,11 +308,17 @@ public class MLPCSS {
                 System.out.println("i = " + i);
             }
 
+            String s2 = "";
+
             if(s.startsWith("GUARNT")) {
-                s += "\tacc_rat\n";
-                out.write(s);
-                out.flush();
-                continue;
+
+                s2 += "guarnt_no\t";
+                s2 += "bad_yn\t";
+                s2 += "income\t";
+                s2 += "debt\t";
+                s2 += "cb_grd\t";
+                s2 += "acc_rat\t";
+
             } else {
 
                 String guarnt_no = getToken(s, 0, "\t");
@@ -331,9 +337,16 @@ public class MLPCSS {
                 System.out.print("  output = " + output);
                 double acc_rat = output.getDouble(0);
                 System.out.println("  acc_rat = " + acc_rat);
-                s += "\n" + acc_rat + "\n";
+
+                s2 += guarnt_no + "\t";
+                s2 += bad_yn + "\t";
+                s2 += income + "\t";
+                s2 += debt + "\t";
+                s2 += cb_grd + "\t";
+                s2 += acc_rat + "\t";
             }
-            out.write(s);
+
+            out.write(s + "\n");
             out.flush();
         }
 
