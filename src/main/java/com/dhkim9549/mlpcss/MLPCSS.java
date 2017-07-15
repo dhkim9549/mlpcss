@@ -275,7 +275,9 @@ public class MLPCSS {
             INDArray feature = Nd4j.create(featureData, new int[]{1, 3});
             INDArray output = model.output(feature);
             System.out.print("feature = " + feature);
-            System.out.println("  output = " + output);
+            System.out.print("  output = " + output);
+            double acc_rat = output.getDouble(0);
+            System.out.println("  acc_rat = " + acc_rat);
         }
     }
 
