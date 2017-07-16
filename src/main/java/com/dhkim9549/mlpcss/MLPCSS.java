@@ -42,9 +42,7 @@ public class MLPCSS {
     static long nEvalSamples = 10000;
 
     static LineNumberReader in = null;
-    static LineNumberReader in2 = null;
     static String trainingDataInputFileName = "/down/data/list.txt";
-    static String testDataInputFileName = "/down/data/list.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -59,8 +57,7 @@ public class MLPCSS {
         System.out.println("************************************************");
 
         MultiLayerNetwork model = getInitModel(learnigRate);
-        //MultiLayerNetwork model = readModelFromFile("/down/sin/css_model_MLPCSS_h2_uSGD_ge_mb16_ss16_ev100000_aSP_150000.zip");
-        //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_mb16_ss16_5210000.zip");
+        //MultiLayerNetwork model = readModelFromFile("/down/sin/css_model_MLPCSS_h2_uSGD_mb16_ss16_200000.zip");
 
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
@@ -92,8 +89,6 @@ public class MLPCSS {
                 writeModelToFile(model, "/down/css_model_" + hpId + "_" + i + ".zip");
             }
         }
-
-        //evaluateModelBatch(model);
     }
 
     public static MultiLayerNetwork getInitModel(double learningRate) throws Exception {
@@ -287,71 +282,6 @@ public class MLPCSS {
             double acc_rat = output.getDouble(0);
             System.out.println("  acc_rat = " + acc_rat);
         }
-    }
-
-    public static void evaluateModelBatch(MultiLayerNetwork model) throws Exception {
-
-        System.out.println("Evaluating batch...");
-
-        // Training data input file reader
-        in2 = new LineNumberReader(new FileReader(testDataInputFileName));
-
-        // Evaluation result output writer
-        BufferedWriter out = new BufferedWriter(new FileWriter("/down/list_eval.txt"));
-
-        int i = 0;
-
-        String s = "";
-        while((s = in2.readLine()) != null) {
-
-            i++;
-            if(i % 1000 == 0) {
-                System.out.println("i = " + i);
-            }
-
-            String s2 = "";
-
-            if(s.startsWith("GUARNT")) {
-
-                s2 += "guarnt_no\t";
-                s2 += "bad_yn\t";
-                s2 += "income\t";
-                s2 += "debt\t";
-                s2 += "cb_grd\t";
-                s2 += "acc_rat\t";
-
-            } else {
-
-                String guarnt_no = getToken(s, 0, "\t");
-                String bad_yn = getToken(s, 19, "\t");
-                long income = Long.parseLong(getToken(s, 15, "\t"));
-                long debt = Long.parseLong(getToken(s, 16, "\t"));
-                long cb_grd = Long.parseLong(getToken(s, 14, "\t"));
-
-                double[] featureData = new double[3];
-                featureData[0] = rescaleAmt(income);
-                featureData[1] = rescaleAmt(debt);
-                featureData[2] = (double) cb_grd / 10.0;
-                INDArray feature = Nd4j.create(featureData, new int[]{1, 3});
-                INDArray output = model.output(feature);
-                System.out.print("feature = " + feature);
-                System.out.print("  output = " + output);
-                double acc_rat = output.getDouble(0);
-                System.out.println("  acc_rat = " + acc_rat);
-
-                s2 += guarnt_no + "\t";
-                s2 += bad_yn + "\t";
-                s2 += income + "\t";
-                s2 += debt + "\t";
-                s2 += cb_grd + "\t";
-                s2 += acc_rat + "\t";
-            }
-
-            out.write(s2 + "\n");
-            out.flush();
-        }
-
-        out.close();
     }
 
     public static double rescaleAmt(long x) {
