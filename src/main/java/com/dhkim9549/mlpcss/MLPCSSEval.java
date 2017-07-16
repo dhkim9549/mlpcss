@@ -49,7 +49,7 @@ public class MLPCSSEval {
         while((s = in.readLine()) != null) {
 
             i++;
-            if(i % 1000 == 0) {
+            if(i % 10000 == 0) {
                 System.out.println("i = " + i);
             }
 
@@ -75,10 +75,10 @@ public class MLPCSSEval {
             featureData[2] = (double) cb_grd / 10.0;
             INDArray feature = Nd4j.create(featureData, new int[]{1, 3});
             INDArray output = model.output(feature);
-            System.out.print("feature = " + feature);
-            System.out.print("  output = " + output);
+            //System.out.print("feature = " + feature);
+            //System.out.print("  output = " + output);
             double acc_rat = output.getDouble(0);
-            System.out.println("  acc_rat = " + acc_rat);
+            //System.out.println("  acc_rat = " + acc_rat);
 
             String s2 = "";
             s2 += guarnt_no + "\t";
