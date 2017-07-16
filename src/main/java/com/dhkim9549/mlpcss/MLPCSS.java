@@ -32,6 +32,9 @@ public class MLPCSS {
     //double learnigRate = Double.parseDouble(args[0]);
     static double learnigRate = 0.0025;
 
+    // Number of sample size per iteration
+    static long nSamples = 16;
+
     // Mini-batch size
     static int batchSize = 16;
 
@@ -51,6 +54,7 @@ public class MLPCSS {
         System.out.println("learnigRate = " + learnigRate);
         System.out.println("Updater = " + "SGD");
         System.out.println("mini-batch size (batchSize) = " + batchSize);
+        System.out.println("Number of sample size per iteration (nSamples) = " + nSamples);
         System.out.println("i >= 0");
         System.out.println("************************************************");
 
@@ -64,9 +68,6 @@ public class MLPCSS {
         // Training data input file reader
         in = new LineNumberReader(new FileReader(trainingDataInputFileName));
 
-        // Get training data
-        List<DataSet> listDs = getTrainingData();
-
         // Training iteration
         long i = 0;
 
@@ -74,40 +75,20 @@ public class MLPCSS {
 
             i++;
 
-            if(i % 1 == 0) {
+            if(i % 1000 == 0) {
                 System.out.println("i = " + i);
             }
-            if(i % 1 == 0) {
+            if(i % 5000 == 0) {
                 evaluateModel(model);
             }
 
-            Collections.shuffle(listDs);
+            List<DataSet> listDs = getTrainingData();
+            DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
 
-            // Because the size of listDs is too big for training, listDs has to be broken up.
-            List<DataSet> listDs2 = new LinkedList<>();
-            int j = 0;
-            for(DataSet ds: listDs) {
+            // Train the model
+            model = train(model, trainIter);
 
-                j++;
-
-                if(j % 10000 == 0) {
-                    System.out.println("j = " + j);
-                }
-
-                listDs2.add(ds);
-
-                if(listDs2.size() == batchSize * 1) {
-
-                    DataSetIterator trainIter = new ListDataSetIterator(listDs2, batchSize);
-
-                    // Train the model
-                    model = train(model, trainIter);
-
-                    listDs2.clear();
-                }
-            }
-
-            if (i % 1 == 0) {
+            if (i % 50000 == 0) {
                 writeModelToFile(model, "/down/css_model_" + hpId + "_" + i + ".zip");
             }
         }
@@ -166,24 +147,21 @@ public class MLPCSS {
 
     private static List<DataSet> getTrainingData() throws Exception {
 
-        System.out.println("Getting training data...");
+        //System.out.println("Getting training data...");
 
         List<DataSet> listDs = new ArrayList<>();
 
-        String s = "";
-        int i = 0;
+        while(listDs.size() < nSamples) {
 
-        while((s = in.readLine()) != null) {
-
-            i++;
-            if(i % 10000 == 0) {
-                System.out.println("i = " + i);
+            String s = in.readLine();
+            if(s == null) {
+                in.close();
+                in = new LineNumberReader(new FileReader(trainingDataInputFileName));
+                continue;
             }
-
             if(s.startsWith("GUARNT_NO")) {
                 continue;
             }
-
             String acpt_updt_dy = getToken(s, 11, "\t");
             if(acpt_updt_dy.compareTo("20150101") >= 0) {
                 continue;
@@ -195,8 +173,8 @@ public class MLPCSS {
 
         Collections.shuffle(listDs);
 
-        System.out.println("listDs.size() = " + listDs.size());
-        System.out.println("Getting training data complete.");
+        //System.out.println("listDs.size() = " + listDs.size());
+        //System.out.println("Getting training data complete.");
 
         return listDs;
     }
