@@ -155,6 +155,7 @@ public class MLPCSS {
 
             String s = in.readLine();
             if(s == null) {
+                System.out.println("Training data file rollover...");
                 in.close();
                 in = new LineNumberReader(new FileReader(trainingDataInputFileName));
                 continue;
