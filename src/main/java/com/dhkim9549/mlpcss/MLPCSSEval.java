@@ -61,7 +61,7 @@ public class MLPCSSEval {
             }
 
             String guarnt_no = MLPCSS.getToken(s, 0, "\t");
-            String bad_yn = MLPCSS.getToken(s, 19, "\t");
+            String bad_yn = MLPCSS.getToken(s, 27, "\t");
             String scor_grd = MLPCSS.getToken(s, 13, "\t");
             long income = Long.parseLong(MLPCSS.getToken(s, 15, "\t"));
             long spos_annl_iamt = Long.parseLong(MLPCSS.getToken(s, 16, "\t"));
