@@ -16,7 +16,7 @@ public class MLPCSSEval {
 
     public static void main(String[] args) throws Exception {
 
-        MultiLayerNetwork model = MLPCSS.readModelFromFile("/down/sin/css_model_MLPCSS_h2_uSGD_mb16_ss16_200000.zip");
+        MultiLayerNetwork model = MLPCSS.readModelFromFile("/down/sin/css_model_MLPCSS_h2_uSGD_mb16_ss16_1_250000.zip");
 
         evaluateModelBatch(model);
 
