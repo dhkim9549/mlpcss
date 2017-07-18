@@ -69,15 +69,16 @@ public class MLPCSSEval {
             long spos_debt_amt = Long.parseLong(MLPCSS.getToken(s, 18, "\t"));
             long cb_grd = Long.parseLong(MLPCSS.getToken(s, 14, "\t"));
 
-            double[] featureData = new double[5];
-            double[] labelData = new double[2];
+            double[] featureData = new double[MLPCSS.numOfInputs];
 
-            featureData[0] = MLPCSS.rescaleAmt(income);
-            featureData[1] = MLPCSS.rescaleAmt(spos_annl_iamt);
-            featureData[2] = MLPCSS.rescaleAmt(stot_debt_amt);
-            featureData[3] = MLPCSS.rescaleAmt(spos_debt_amt);
-            featureData[4] = (double)cb_grd / 10.0;
-            INDArray feature = Nd4j.create(featureData, new int[]{1, 5});
+            featureData[0] = (double)cb_grd / 10.0;
+/*
+            featureData[1] = MLPCSS.rescaleAmt(income);
+            featureData[2] = MLPCSS.rescaleAmt(spos_annl_iamt);
+            featureData[3] = MLPCSS.rescaleAmt(stot_debt_amt);
+            featureData[4] = MLPCSS.rescaleAmt(spos_debt_amt);
+*/
+            INDArray feature = Nd4j.create(featureData, new int[]{1, MLPCSS.numOfInputs});
             INDArray output = model.output(feature);
             //System.out.print("feature = " + feature);
             //System.out.print("  output = " + output);

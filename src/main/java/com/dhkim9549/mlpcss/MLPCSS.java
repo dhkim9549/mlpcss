@@ -41,6 +41,9 @@ public class MLPCSS {
     // Evaluation sample size
     static long nEvalSamples = 10000;
 
+    // Number of input variables to the neural network
+    static int numOfInputs = 1;
+
     static LineNumberReader in = null;
     static String trainingDataInputFileName = "/down/data/list.txt";
 
@@ -95,7 +98,7 @@ public class MLPCSS {
 
         int seed = 123;
 
-        int numInputs = 5;
+        int numInputs = numOfInputs;
         int numOutputs = 2;
         int numHiddenNodes = 30;
 
@@ -206,14 +209,16 @@ public class MLPCSS {
         long spos_debt_amt = Long.parseLong(getToken(s, 18, "\t"));
         long cb_grd = Long.parseLong(getToken(s, 14, "\t"));
 
-        double[] featureData = new double[5];
+        double[] featureData = new double[numOfInputs];
         double[] labelData = new double[2];
 
-        featureData[0] = rescaleAmt(income);
-        featureData[1] = rescaleAmt(spos_annl_iamt);
-        featureData[2] = rescaleAmt(stot_debt_amt);
-        featureData[3] = rescaleAmt(spos_debt_amt);
-        featureData[4] = (double)cb_grd / 10.0;
+        featureData[0] = (double)cb_grd / 10.0;
+/*
+        featureData[1] = rescaleAmt(income);
+        featureData[2] = rescaleAmt(spos_annl_iamt);
+        featureData[3] = rescaleAmt(stot_debt_amt);
+        featureData[4] = rescaleAmt(spos_debt_amt);
+*/
         if(bad_yn != null && bad_yn.equals("Y")) {
             labelData[0] = 1.0;
             labelData[1] = 0.0;
@@ -222,7 +227,7 @@ public class MLPCSS {
             labelData[1] = 1.0;
         }
 
-        INDArray feature = Nd4j.create(featureData, new int[]{1, 5});
+        INDArray feature = Nd4j.create(featureData, new int[]{1, numOfInputs});
         INDArray label = Nd4j.create(labelData, new int[]{1, 2});
 
         DataSet ds = new DataSet(feature, label);
@@ -241,13 +246,15 @@ public class MLPCSS {
 
         System.out.println("cb_grd");
         for(int i = 1; i <= 10; i++) {
-            double[] featureData = new double[5];
-            featureData[0] = rescaleAmt(0);
+            double[] featureData = new double[numOfInputs];
+            featureData[0] = (double)i / 10.0;
+/*
             featureData[1] = rescaleAmt(0);
             featureData[2] = rescaleAmt(0);
             featureData[3] = rescaleAmt(0);
-            featureData[4] = (double)i / 10.0;
-            INDArray feature = Nd4j.create(featureData, new int[]{1, 5});
+            featureData[4] = rescaleAmt(0);
+*/
+            INDArray feature = Nd4j.create(featureData, new int[]{1, numOfInputs});
             INDArray output = model.output(feature);
             System.out.print("feature = " + feature);
             System.out.print("  output = " + output);
